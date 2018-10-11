@@ -1,4 +1,4 @@
-# Fetching-ricepuppy-API-Data
+# Fetching-ricepuppy-API-Data-ReactJS
 Fetching ricepuppy API data for different ingredients using ReactJS
 
 The code written fetches data from the ricepuppy API.
