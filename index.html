@@ -1,0 +1,220 @@
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="https://fb.me/react-0.14.0.js"></script>
+	<script src="https://fb.me/react-dom-0.14.0.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.25/browser.min.js"></script>
+<style>
+	table, th, td {
+		border: 1px solid black;
+	}
+  </style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div>
+				<div id="ricepuppydata"></div>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/babel">
+	'use strict'
+		var Profile = React.createClass({
+			handleSubmit: function(e){
+				if(e=="recepie1"){
+				this.setState(({recepie1: true}), function(){
+					this.loadFirstRecepie();
+					this.setState({recepie2:false});
+				});	
+				}
+				else if(e=="recepie2"){
+				this.setState(({recepie2: true}), function(){
+					this.loadSecondRecepie();
+					this.setState({recepie1:false});
+				});	
+			}
+			},
+			getDefaultProps: function(){
+				return {
+					url1:'http://www.recipepuppy.com/api/?i=onions,bacon&q=Vegetables&p=1',
+					url2:'http://www.recipepuppy.com/api/?i=bacon, broccoli, cauliflower, eggs, lettuce, mayonnaise, peas, raisins, red onions, shallot, spinach, sugar, sunflower seed'
+				}
+			},
+			getInitialState: function(){
+				return {
+					recepie1: false,
+					recepie2: false,
+					recepie1Data:[],
+					recepie2Data:[]
+				}
+			},
+			 loadFirstRecepie: function(){
+				return fetch(this.props.url1)
+      .then(response => response.json())
+      .then(responseJSON => this.setState({ recepie1Data :responseJSON}));
+			},
+			 loadSecondRecepie: function(){
+				return fetch(this.props.url2)
+      .then(response => response.json())
+      .then(responseJSON => this.setState({ recepie2Data :responseJSON}));
+			},
+			componentDidMount: function(){
+				this.loadFirstRecepie();
+				this.loadSecondRecepie();
+			},
+
+			render: function(){
+				const recepie1Data=this.state.recepie1Data;
+				const recepie2Data=this.state.recepie2Data;
+				console.log("recepie1Data and recepie2Data",recepie1Data,recepie2Data)
+				console.log("this.state.recepie1",this.state.recepie1,"this.state.recepie2",this.state.recepie2)
+				if(recepie1Data.length!=0 ||recepie2Data.length!=0 ){
+				return(
+						<div>		
+						<SubmitButtons onButtonClick={this.handleSubmit}/>			
+			            {this.state.recepie1 ? <Recepie1Info Recepie1Data={recepie1Data}/> : null}
+							{this.state.recepie2 ? <Recepie2Info Recepie2Data={recepie2Data}/> : null}
+						</div>
+					)
+				}
+				else {
+      return <div>Loading...</div>;
+    }
+
+			}
+		});
+		var SubmitButtons = React.createClass({
+			handleSubmit: function(e){
+				e.preventDefault();
+				this.props.onButtonClick(e.target.id);
+			},
+			render: function(){
+				return(
+							<div className="form-group">
+							<button onClick={this.handleSubmit} id="recepie1">
+			               Get Recepie 1
+			            </button>
+			            <button onClick={this.handleSubmit} id="recepie2">
+			               Get Recepie 2
+			            </button>	
+							</div>
+					)
+			}
+		});
+		var Recepie1Info = React.createClass({
+			render: function(){
+				if(this.props.Recepie1Data){
+					return(
+						<div className="row">
+						<Title1Info titles={this.props.Recepie1Data}/>
+						</div>
+					);
+				}
+					
+					else {
+      return <div>Loading...</div>;
+    }			
+				}
+		});
+		var Title1Info = React.createClass({
+			render: function(){
+					let patt=/[^a-zA-Z ]/g;
+					//let patt= /\\n\r\t/g;
+					if(this.props.titles.results){
+					var resultsSet= this.props.titles.results.map(function(value,index){
+					return(
+						<tr key={index}>
+				 			<td>{value.title.replace(patt," ").trim()}</td>
+				 			<td>{value.href}</td> 
+				 			<td>{value.ingredients.split(', ').sort().join(',')}</td>
+				 			</tr>
+
+					);
+					});	
+					return(
+					<div>
+						<h2 className="mb-4">Recipies</h2>
+						<table styles="width:100%;float:left">
+						<tbody>
+						 <tr>
+						<th>Title</th>
+						<th>Link</th> 
+						<th>Ingredients</th> 
+						</tr>
+						{resultsSet}
+						</tbody>
+						</table>
+					</div>
+					)	
+					}
+					
+					else {
+      return <div>Loading...</div>;
+    }			
+				}
+			});
+			var Recepie2Info = React.createClass({
+			render: function(){
+				if(this.props.Recepie2Data){
+					return(
+						<div className="row">
+						<Title2Info titles={this.props.Recepie2Data}/>
+						</div>
+					);
+				}
+					
+					else {
+      return <div>Loading...</div>;
+    }			
+				}
+		});
+		var Title2Info = React.createClass({
+			render: function(){
+					let patt=/[^a-zA-Z ]/g;
+					//let patt= /\\n\r\t/g;
+					if(this.props.titles.results){
+					var resultsSet1= this.props.titles.results.map(function(value,index){
+					return(
+						<tr key={index}>
+				 			<td>{value.title.replace(patt," ").trim()}</td>
+				 			<td>{value.href}</td> 
+				 			<td>{value.ingredients.split(', ').sort().join(',')}</td>
+				 			</tr>
+
+					);
+					});	
+					return(
+					<div>
+						<h2 className="mb-4">Recipies</h2>
+						<table styles="width:100%;float:left">
+						<tbody>
+						 <tr>
+						<th>Title</th>
+						<th>Link</th> 
+						<th>Ingredients</th> 
+						</tr>
+						{resultsSet1}
+						</tbody>
+						</table>
+					</div>
+					)	
+					}
+					
+					else {
+      return <div>Loading...</div>;
+    }			
+				}
+		});
+		ReactDOM.render(
+				<Profile />,
+				document.getElementById('ricepuppydata')
+			);
+	</script>
+</body>
+</html>
+
+
