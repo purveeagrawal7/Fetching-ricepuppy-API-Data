@@ -188,8 +188,6 @@ having the ingredients "onion" and "bacon".</h2>
 					return(
 						<tr key={index}>
 				 			<td>{value.title.replace(patt," ").trim()}</td>
-				 			<td>{value.href}</td> 
-				 			<td>{value.ingredients.split(', ').sort().join(',')}</td>
 				 			</tr>
 
 					);
@@ -202,8 +200,6 @@ sunflower seed"</h2>
 						<tbody>
 						 <tr>
 						<th>Title</th>
-						<th>Link</th> 
-						<th>Ingredients</th> 
 						</tr>
 						{resultsSet1}
 						</tbody>
