@@ -11,4 +11,6 @@ The code written fetches data from the ricepuppy API.
   "bacon, broccoli, cauliflower, eggs, lettuce, mayonnaise, peas, raisins, red onions, shallot, spinach, sugar,
   sunflower seed"
    A table will be displayed for this and will contain all the recepies for the above ingredients.
+   
+   Data1.png and Data2.png are the 2 screenshots of the outputs for the data fetched using the first and second links respectively.
  
